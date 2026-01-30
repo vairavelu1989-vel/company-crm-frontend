@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Company CRM</title>
+  <style>
+    body { font-family: Arial; margin: 40px; }
+    input { margin: 5px; padding: 5px; }
+    button { padding: 6px 12px; }
+    ul { margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <h2>Company CRM</h2>
+
+  <h3>Add User</h3>
+  <input id="name" placeholder="Name" />
+  <input id="email" placeholder="Email" />
+  <button onclick="addUser()">Add</button>
+
+  <h3>Users</h3>
+  <button onclick="loadUsers()">Load Users</button>
+
+  <ul id="users"></ul>
+
+  <script>
+    const API = "https://company-crm-backend.onrender.com";
+
+    async function loadUsers() {
+      const res = await fetch(API + "/users");
+      const data = await res.json();
+
+      const ul = document.getElementById("users");
+      ul.innerHTML = "";
+
+      data.forEach(u => {
+        const li = document.createElement("li");
+        li.innerText = u.name + " - " + u.email;
+        ul.appendChild(li);
+      });
+    }
+
+    async function addUser() {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+
+      await fetch(API + "/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email })
+      });
+
+      loadUsers();
+    }
+  </script>
+
+</body>
+</html>
